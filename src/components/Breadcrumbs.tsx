@@ -5,7 +5,7 @@ import type {
 } from "@quartz-community/types";
 import { classNames } from "../util/lang";
 import { resolveRelative, simplifySlug } from "../util/path";
-import { FileTrieNode, trieFromAllFiles } from "../util/fileTrie";
+import { FileTrieNode, pagePosition, trieFromAllFiles } from "../util/fileTrie";
 import style from "./styles/breadcrumbs.scss";
 
 type CrumbData = {
@@ -56,7 +56,8 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     );
     const trie = typedCtx.trie;
     const slug = fileData.slug as string;
-    const slugParts = slug.split("/");
+    // the page's place in the navigation (its file path), which differs from its slug with a permalink
+    const slugParts = pagePosition(fileData as { slug?: string; relativePath?: string }).split("/");
     const pathNodes = trie.ancestryChain(slugParts);
 
     if (!pathNodes) {
