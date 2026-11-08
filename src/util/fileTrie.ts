@@ -1,3 +1,4 @@
+import { slugifyFilePath } from "@quartz-community/utils/path";
 import { joinSegments } from "@quartz-community/utils";
 
 interface FileTrieData {
@@ -87,8 +88,9 @@ export class FileTrieNode<T extends FileTrieData = FileTrieData> {
     }
   }
 
-  add(file: T): void {
-    this.insert(file.slug.split("/"), file);
+  /** Add a page at `position` (default: its slug); see trieFromAllFiles. */
+  add(file: T, position: string = file.slug): void {
+    this.insert(position.split("/"), file);
   }
 
   findNode(path: string[]): FileTrieNode<T> | undefined {
@@ -137,19 +139,31 @@ export function trieFromAllFiles(
   allFiles: Array<{
     slug?: string;
     filePath?: string;
+    relativePath?: string;
     frontmatter?: { title?: string; [key: string]: unknown };
   }>,
 ): FileTrieNode {
   const trie = new FileTrieNode([]);
   allFiles.forEach((file) => {
     if (file.frontmatter) {
-      trie.add({
-        slug: file.slug!,
-        title: file.frontmatter.title ?? "",
-        filePath: file.filePath!,
-      });
+      trie.add(
+        {
+          slug: file.slug!,
+          title: file.frontmatter.title ?? "",
+          filePath: file.filePath!,
+        },
+        pagePosition(file),
+      );
     }
   });
 
   return trie;
+}
+
+/**
+ * Where a page sits in the navigation: its file path. A note with a permalink is published at the
+ * permalink (its slug) but stays in its folder, as in Obsidian Publish.
+ */
+export function pagePosition(file: { slug?: string; relativePath?: string }): string {
+  return file.relativePath ? slugifyFilePath(file.relativePath as never) : (file.slug ?? "");
 }
