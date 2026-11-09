@@ -5,14 +5,16 @@ Displays breadcrumb navigation showing the page's position in the folder hierarc
 ## Installation
 
 ```bash
-npx quartz plugin add github:quartz-community/breadcrumbs
+npx quartz plugin add @quartz-community/breadcrumbs
 ```
+
+It is already included (and enabled) in the default `quartz.config.yaml`.
 
 ## Usage
 
 ```yaml title="quartz.config.yaml"
 plugins:
-  - source: github:quartz-community/breadcrumbs
+  - source: "@quartz-community/breadcrumbs"
     enabled: true
     layout:
       position: beforeBody
