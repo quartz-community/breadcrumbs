@@ -65,7 +65,11 @@ export default ((opts?: Partial<BreadcrumbOptions>) => {
     }
 
     const crumbs: CrumbData[] = pathNodes.map((node, idx) => {
-      const crumb = formatCrumb(node.displayName, slug, simplifySlug(node.slug));
+      // a folder's crumb shows its index page's frontmatter title, or with
+      // resolveFrontmatterTitle: false the folder's own name
+      const name =
+        node.isFolder && !options.resolveFrontmatterTitle ? node.fileName : node.displayName;
+      const crumb = formatCrumb(name, slug, simplifySlug(node.slug));
       if (idx === 0) {
         crumb.displayName = options.rootName;
       }
