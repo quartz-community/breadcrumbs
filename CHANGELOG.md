@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.6
+
+### Patch Changes
+
+- 4112421: `resolveFrontmatterTitle: false` now works: folder crumbs show the folder's name instead of its index page's frontmatter title. The default (`true`) is unchanged.
+
 ## 1.0.5
 
 ### Patch Changes
