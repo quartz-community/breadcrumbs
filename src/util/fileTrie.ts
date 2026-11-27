@@ -31,6 +31,11 @@ export class FileTrieNode<T extends FileTrieData = FileTrieData> {
     );
   }
 
+  /** The name of the file or folder itself (as written in the content folder), not its title. */
+  get fileName(): string {
+    return this.fileSegmentHint ?? this.slugSegment ?? "";
+  }
+
   set displayName(name: string) {
     this.displayNameOverride = name;
   }

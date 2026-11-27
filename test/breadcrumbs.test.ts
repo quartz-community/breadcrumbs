@@ -103,16 +103,23 @@ describe("Breadcrumbs", () => {
     expect(renderToHtml(Component(props))).toBe("");
   });
 
-  // bug: `resolveFrontmatterTitle` is documented ("Whether to use the title from frontmatter for
-  // breadcrumb items", default true) but never read: folder crumbs always use the folder index's
-  // frontmatter title.
-  it.fails(
-    "uses folder names instead of frontmatter titles with resolveFrontmatterTitle: false",
-    () => {
-      const { items } = crumbs(find("Projects/Garden/Tomatoes.md"), {
-        resolveFrontmatterTitle: false,
-      });
-      expect(items.map(([name]) => name).slice(1, 3)).toEqual(["Projects", "Garden"]);
-    },
-  );
+  // `resolveFrontmatterTitle` (documented, default true) used to be ignored: folder crumbs always
+  // used the folder index's frontmatter title.
+  it("uses folder names instead of frontmatter titles with resolveFrontmatterTitle: false", () => {
+    const { items } = crumbs(find("Projects/Garden/Tomatoes.md"), {
+      resolveFrontmatterTitle: false,
+    });
+    expect(items).toEqual([
+      ["Home", "../../"],
+      ["Projects", "../../projects/"],
+      ["Garden", "../../projects/garden/"],
+      // the page itself is not a folder: it keeps its title
+      ["Growing tomatoes", ""],
+    ]);
+  });
+
+  it("uses the folder name for a folder page's own crumb with resolveFrontmatterTitle: false", () => {
+    const { items } = crumbs(find("Projects/Garden/index.md"), { resolveFrontmatterTitle: false });
+    expect(items.map(([name]) => name)).toEqual(["Home", "Projects", "Garden"]);
+  });
 });
